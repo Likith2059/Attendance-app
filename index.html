@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timesheet Entry</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      text-align: center;
+      padding: 20px 10px 0 10px;
+      font-size: 26px;
+      font-weight: bold;
+      color: #222;
+      position: relative;
+    }
+    .watermark {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 80px;
+      color: rgba(0, 0, 0, 0.05);
+      font-weight: bold;
+      pointer-events: none;
+      z-index: 0;
+      white-space: nowrap;
+    }
+    .container {
+      max-width: 700px;
+      margin: 30px auto 50px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    textarea {
+      resize: vertical;
+    }
+    button {
+      margin-top: 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="watermark">YourCompany Logo</div>
+
+  <div class="header">Timesheet Management System</div>
+
+
+  <div class="container">
+    <h2>Employee Timesheet</h2>
+
+    <label>Employee Name</label>
+    <input type="text" id="name" placeholder="Enter name" required />
+
+    <label>Employee ID</label>
+    <input type="text" id="empid" placeholder="Enter ID" required />
+
+    <div class="row">
+      <div>
+        <label>Date</label>
+        <input type="date" id="date" required />
+      </div>
+      <div>
+        <label>Project</label>
+        <input type="text" id="project" placeholder="Project name" required />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Start Time</label>
+        <input type="time" id="startTime" required />
+      </div>
+      <div>
+        <label>End Time</label>
+        <input type="time" id="endTime" required />
+      </div>
+    </div>
+
+    <label>Task Description</label>
+    <textarea id="task" rows="3" placeholder="Work details"></textarea>
+
+    <button onclick="addTimesheet()">Submit Timesheet</button>
+
+    <div id="msg" class="success"></div>
+
+    <table id="timesheetTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>ID</th>
+          <th>Date</th>
+          <th>Project</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Hours</th>
+          <th>Task</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+<script>
+  function calculateHours(start, end) {
+    const startDate = new Date(`1970-01-01T${start}:00`);
+    const endDate = new Date(`1970-01-01T${end}:00`);
+    const diffMs = endDate - startDate;
+    const diffHrs = diffMs / (1000 * 60 * 60);
+    return diffHrs.toFixed(2);
+  }
+
+  function addTimesheet() {
+    const name = document.getElementById('name').value;
+    const empid = document.getElementById('empid').value;
+    const date = document.getElementById('date').value;
+    const project = document.getElementById('project').value;
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
+    const task = document.getElementById('task').value;
+
+    if (!name || !empid || !date || !project || !startTime || !endTime) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    const hours = calculateHours(startTime, endTime);
+
+    const table = document.getElementById('timesheetTable').getElementsByTagName('tbody')[0];
+    const row = table.insertRow();
+
+    row.insertCell(0).innerText = name;
+    row.insertCell(1).innerText = empid;
+    row.insertCell(2).innerText = date;
+    row.insertCell(3).innerText = project;
+    row.insertCell(4).innerText = startTime;
+    row.insertCell(5).innerText = endTime;
+    row.insertCell(6).innerText = hours;
+    row.insertCell(7).innerText = task;
+
+    document.getElementById('msg').innerText = "Timesheet recorded successfully!";
+
+    document.getElementById('project').value = "";
+    document.getElementById('startTime').value = "";
+    document.getElementById('endTime').value = "";
+    document.getElementById('task').value = "";
+  }
+</script>
+
+</body>
+</html>
